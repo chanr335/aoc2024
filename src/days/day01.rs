@@ -1,11 +1,15 @@
-use std::fs;
+use std::{collections::HashMap, fs};
 
 pub fn solve() {
+    part_one();
+    part_two();
+}
+
+fn parse_file() -> Result<(Vec<i32>, Vec<i32>), ()> {
     //create an array for the left and right side of the puzzle
     //32 bit integer dynamic lists stored in heap
     let mut left: Vec<i32> = Vec::new();
     let mut right: Vec<i32> = Vec::new();
-
     //not setting fs to a variable
     fs::read_to_string("inputs/day01.txt")
         .expect("ERROR: could not find input file")
@@ -19,9 +23,13 @@ pub fn solve() {
             let right_num = parts.next().expect("ERROR: could not parse input");
             left.push(left_num.parse::<i32>().unwrap());
             right.push(right_num.parse::<i32>().unwrap());
-            println!("{left_num}, {right_num}")
         });
+    Ok((left, right))
+}
 
+//sort then find abs difference of each side of list
+fn part_one() {
+    let (mut left, mut right) = parse_file().expect("ERROR: could not parse file");
     left.sort();
     right.sort();
 
@@ -35,4 +43,26 @@ pub fn solve() {
         .sum::<u32>();
 
     println!("ANSWER: {res}")
+}
+
+fn part_two() {
+    let (left, right) = parse_file().expect("ERROR: could not parse file");
+    let right_freq = right
+        .iter()
+        .copied()
+        .fold(HashMap::<i32, i32>::new(), |mut f, num| {
+            f.entry(num).and_modify(|freq| *freq += 1).or_insert(1);
+            //return f
+            f
+        });
+
+    let ans: i32 = left
+        .iter()
+        .map(|num| {
+            let freq = *right_freq.get(num).unwrap_or(&0);
+            num * freq
+        })
+        .sum();
+
+    println!("ANSWER: {ans}");
 }
