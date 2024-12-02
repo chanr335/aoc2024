@@ -22,6 +22,9 @@ fn entry() -> Result<(), ()> {
         "day01" => {
             days::day01::solve();
         }
+        "day02" => {
+            days::day02::solve();
+        }
         _ => {
             eprintln!("ERROR: this day is not implemented");
             return Err(());

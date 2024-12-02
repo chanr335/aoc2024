@@ -47,15 +47,18 @@ fn part_one() {
 
 fn part_two() {
     let (left, right) = parse_file().expect("ERROR: could not parse file");
+    //count the frequencies of every number in the right side
     let right_freq = right
         .iter()
         .copied()
         .fold(HashMap::<i32, i32>::new(), |mut f, num| {
+            //modify the value at the key num
             f.entry(num).and_modify(|freq| *freq += 1).or_insert(1);
             //return f
             f
         });
 
+    //iterate through the left list and multiply by it's key in the hashmap
     let ans: i32 = left
         .iter()
         .map(|num| {
